@@ -1,5 +1,7 @@
-from structure import Gene as make_gene
 from itertools import chain
+
+from EasyGA.structure import Gene as make_gene
+
 
 def to_gene(gene):
     """Converts the input to a gene if it isn't already one."""
@@ -10,8 +12,7 @@ def to_gene(gene):
         return make_gene(gene)
 
 
-class Chromosome():
-
+class Chromosome:
     def __init__(self, gene_list):
         """Initialize the chromosome with fitness value of None, and a
         set of genes dependent on user-passed parameter."""
@@ -19,23 +20,19 @@ class Chromosome():
         self.gene_list = [make_gene(gene) for gene in gene_list]
         self.fitness = None
 
-
     @property
     def gene_value_list(self):
         """Returns a list of gene values"""
         return [gene.value for gene in self]
-
 
     @property
     def gene_value_iter(self):
         """Returns an iterable of gene values"""
         return (gene.value for gene in self)
 
-
-    #==================================================#
+    # ==================================================#
     # Magic-Dunder Methods replicating list structure. #
-    #==================================================#
-
+    # ==================================================#
 
     def __iter__(self):
         """
@@ -54,7 +51,6 @@ class Chromosome():
         """
         return iter(self.gene_list)
 
-
     def __getitem__(self, index):
         """
         Allows the user to use
@@ -62,7 +58,6 @@ class Chromosome():
         to get the indexed gene.
         """
         return self.gene_list[index]
-
 
     def __setitem__(self, index, gene):
         """
@@ -79,7 +74,6 @@ class Chromosome():
         else:
             self.gene_list[index] = [to_gene(item) for item in gene]
 
-
     def __delitem__(self, index):
         """
         Allows the user to use
@@ -87,7 +81,6 @@ class Chromosome():
         to delete a gene at the specified index.
         """
         del self.gene_list[index]
-
 
     def __len__(self):
         """
@@ -97,15 +90,13 @@ class Chromosome():
         """
         return len(self.gene_list)
 
-
     def __contains__(self, gene):
         """
         Allows the user to use
                 if gene in chromosome
         to check if a gene is in the chromosome.
         """
-        return (to_gene(gene) in self.gene_list)
-
+        return to_gene(gene) in self.gene_list
 
     def __hash__(self):
         """
@@ -117,48 +108,39 @@ class Chromosome():
         """
         return hash(tuple(self))
 
-
     def __eq__(self, chromosome):
         """Returns self == chromosome, True if all genes match."""
         return self.gene_list == chromosome.gene_list
-
 
     def __hash__(self):
         """Hash chromosomes by genes so they can be used in sets/dictionaries."""
         return hash(tuple(self))
 
-
     def __add__(self, chromosome):
         """Return self + chromosome, a chromosome made by concatenating the genes."""
         return Chromosome(chain(self, chromosome))
-
 
     def __iadd__(self, chromosome):
         """Implement self += chromosome by concatenating the new genes."""
         self.gene_list += (to_gene(gene) for gene in chromosome)
 
-
     def append(self, gene):
         """Append gene to the end of the chromosome."""
         self.gene_list.append(to_gene(gene))
-
 
     def clear(self):
         """Remove all genes from chromosome."""
         self.gene_list = []
 
-
     def copy(self):
         """Return a copy of the chromosome."""
         return Chromosome(self)
-
 
     def count(self, gene):
         """Return number of occurrences of the gene in the chromosome."""
         return self.gene_list.count(to_gene(gene))
 
-
-    def index(self, gene, guess = None):
+    def index(self, gene, guess=None):
         """
         Allows the user to use
                 index = chromosome.index(gene)
@@ -178,36 +160,32 @@ class Chromosome():
 
         # Use symmetric mod
         guess %= len(self)
-        if guess >= len(self)//2:
+        if guess >= len(self) // 2:
             guess -= len(self)
 
         # Search outwards for the gene
-        for i in range(1+len(self)//2):
-
+        for i in range(1 + len(self) // 2):
             # Search to the left
-            if gene == self[guess-i]:
-                return (guess-i) % len(self)
+            if gene == self[guess - i]:
+                return (guess - i) % len(self)
 
             # Search to the right
-            elif gene == self[guess+i]:
-                return (guess+i) % len(self)
+            elif gene == self[guess + i]:
+                return (guess + i) % len(self)
 
         # Gene not found
         raise ValueError("No such gene in the chromosome found")
-
 
     def insert(self, index, gene):
         """Insert gene so that self[index] == gene."""
         self.gene_list.insert(index, to_gene(gene))
 
-
-    def pop(self, index = -1):
+    def pop(self, index=-1):
         """Remove and return gene at index (default last).
 
         Raises IndexError if chromosome is empty or index is out of range.
         """
         return self.gene_list.pop(index)
-
 
     def remove(self, gene):
         """Remove first occurrence of gene.
@@ -215,7 +193,6 @@ class Chromosome():
         Raises ValueError if the gene in not present.
         """
         self.gene_list.remove(to_gene(gene))
-
 
     def __repr__(self):
         """
@@ -229,7 +206,6 @@ class Chromosome():
         """
         return repr(self.gene_list)
 
-
     def __str__(self):
         """
         Allows the user to use
@@ -237,4 +213,4 @@ class Chromosome():
                 print(chromosome)
         to get a frontend representation of the chromosome.
         """
-        return ''.join(str(gene) for gene in self)
+        return "".join(str(gene) for gene in self)

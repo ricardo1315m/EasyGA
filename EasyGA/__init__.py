@@ -1,0 +1,1 @@
+from EasyGA import structure
